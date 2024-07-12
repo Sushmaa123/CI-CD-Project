@@ -1,0 +1,12 @@
+version: '3.0'
+services:
+  spring-service:
+    build: .
+    ports:
+      - 56:8080
+    volumes:
+      - spring-vol:/usr/src/myapp
+
+volumes:
+  spring-vol:
+    driver: local
