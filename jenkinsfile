@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('git checkout') {
             steps {
-             git 'https://github.com/Sushmaa123/Springboot.git'
+             git 'https://github.com/Sushmaa123/Java-Springboot.git'
             }
         }
          stage('compile') {
@@ -21,9 +21,9 @@ pipeline {
          stage('code analysis') {
             steps {
               withSonarQubeEnv('sonar-server') {
-               sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Springboot \
+               sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Java-Springboot \
                -Dsonar.java.binaries=. \
-               -Dsonar.projectKey=Springboot'''
+               -Dsonar.projectKey=Java-Springboot'''
               }
             }
         }
@@ -45,17 +45,17 @@ pipeline {
             steps {
              script {
                 withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                    sh 'docker tag spring-boot sushmagowda321/spring:1.0'
-                    sh 'docker push sushmagowda321/spring:1.0'
+                    sh 'docker tag spring-boot sushmagowda321/springdocker:1.0'
+                    sh 'docker push sushmagowda321/springdocker:1.0'
                   }
               }
             }
          }    
-        stage('docker container') {
+        stage('docker compose') {
             steps {
              script {
                  withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                    sh 'docker compose up -d'
+                    sh 'docker-compose up -d'
                   }
               }
             }
