@@ -3,7 +3,7 @@ services:
   spring-service:
     build: .
     ports:
-      - 56:8080
+      - 8056:8081
     volumes:
       - spring-vol:/usr/src/myapp
 
