@@ -45,8 +45,8 @@ pipeline {
             steps {
              script {
                 withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                    sh 'docker tag spring-boot sushmagowda321/springdocker:1.0'
-                    sh 'docker push sushmagowda321/springdocker:1.0'
+                    sh 'docker tag spring-boot sushmagowda321/spring-boot'
+                    sh 'docker push sushmagowda321/spring-boot'
                   }
               }
             }
