@@ -35,28 +35,26 @@ pipeline {
          stage('docker build') {
             steps {
              script {
-                 withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
                     sh 'docker build -t spring-boot .'
-                  }
               }
             }
         }
          stage('docker push') {
             steps {
              script {
-                withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
+                
                     sh 'docker tag spring-boot sushmagowda321/spring-boot'
                     sh 'docker push sushmagowda321/spring-boot'
-                  }
+                  
               }
             }
          }    
-        stage('docker compose') {
+        stage('docker container') {
             steps {
              script {
-                 withDockerRegistry(credentialsId: 'docker-cred', toolName: 'docker') {
-                    sh 'docker-compose up -d'
-                  }
+                
+                    sh 'docker run -itd --name java-spring -p 8081:8080 spring-boot'
+                 
               }
             }
         }
@@ -66,7 +64,7 @@ pipeline {
     post {
         always {
             echo 'slack Notification.'
-            slackSend channel: '#javaspring-ci-cd-pipeline',
+            slackSend channel: '#devops-ci-cd',
             color: COLOR_MAP [currentBuild.currentResult],
             message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URl}"
             
