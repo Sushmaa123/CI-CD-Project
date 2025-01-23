@@ -6,7 +6,9 @@ pipeline {
     agent any
      environment {
         SCANNER_HOME = tool 'sonarqube'
-    }
+        IMAGE_NAME = "my-app-image" // Name of the image created in Jenkins
+        CONTAINER_NAME = "my-app-container" // Name of the container created in Jenkins
+     }
     stages {
         stage('git checkout') {
             steps {
