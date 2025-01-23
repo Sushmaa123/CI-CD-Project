@@ -10,6 +10,11 @@ pipeline {
         CONTAINER_NAME = "my-app-container" // Name of the container created in Jenkins
      }
     stages {
+        stage('clean worspace') {
+        steps {
+           cleanWs()
+           }
+        }
         stage('git checkout') {
             steps {
              git 'https://github.com/Sushmaa123/CI-CD-Project.git'
