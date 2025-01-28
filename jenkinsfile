@@ -5,8 +5,8 @@ def COLOR_MAP = [
 pipeline {
     agent any
      environment {
-        SCANNER_HOME = tool 'sonarqube'
-        IMAGE_NAME = "sushmagowda321/java-spring" // Name of the image created in Jenkins
+        SCANNER_HOME = tool 'sonar-scanner'
+        IMAGE_NAME = "sushmaagowdaa/java-spring" // Name of the image created in Jenkins
         CONTAINER_NAME = "java-spring" // Name of the container created in Jenkins
      }
     stages {
@@ -34,6 +34,18 @@ pipeline {
               }
             }
         }
+         stage('OWASP FS SCAN') {
+            steps {
+                dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        stage('TRIVY FS SCAN') {
+            steps {
+                sh 'trivy fs .'
+            }
+        }
+
         stage('package') {
             steps {
               sh 'mvn install'
@@ -73,10 +85,18 @@ pipeline {
               }
             }
         }
+         stage("TRIVY"){
+            steps{
+                sh 'trivy image $IMAGE_NAME' 
+            }
+        }
+
          stage('docker push') {
             steps {
              script {
-                    sh 'docker push $IMAGE_NAME'
+                 withDockerRegistry(credentialsId: 'docker-cred') {
+                       sh 'docker push $IMAGE_NAME'
+                  }
               }
             }
          }    
@@ -95,11 +115,10 @@ pipeline {
     post {
         always {
             echo 'slack Notification.'
-            slackSend channel: '#devops-ci-cd',
+            slackSend channel: '#ci-cd',
             color: COLOR_MAP [currentBuild.currentResult],
             message: "*${currentBuild.currentResult}:* Job ${env.JOB_NAME} build ${env.BUILD_NUMBER} \n More info at: ${env.BUILD_URl}"
             
         }
     }
 }
-
